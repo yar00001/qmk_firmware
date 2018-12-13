@@ -212,7 +212,7 @@ led_instruction_t led_instructions[] = {
     //backlight keys
     { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_RGB, .id2 = 4286578688, .id3 = 8388607, .r = 0, .g = 0, .b = 255 },
     //escape
-    { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB, .id0 = 1, .layer = 0, .r = 255, .g = 255, .b = 0 },
+    { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB, .id0 = 1, .layer = 0, .r = 0, .g = 0, .b = 255 },
     { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB, .id0 = 1, .layer = 1, .r = 197, .g = 9, .b = 213 },
     { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB, .id0 = 1, .layer = 2, .r = 255, .g = 0, .b = 0 },
 
