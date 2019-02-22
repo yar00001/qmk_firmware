@@ -164,7 +164,7 @@ void led_matrix_run()
         else
         {
             led_instruction_t *led_cur_instruction;
-            led_cur_instruction = led_instructions;
+            led_cur_instruction = led_instructions[current_map_idx];
 
             //Act on LED
             if (led_cur_instruction->end) {

@@ -31,7 +31,12 @@ typedef struct led_instruction_s {
     uint8_t end;
 } led_instruction_t;
 
-extern led_instruction_t led_instructions[];
+extern const uint8_t led_instructions_count;
+extern led_instruction_t *led_instructions[];
+
 extern uint32_t layer_state;
+extern uint8_t current_map_idx;
+
+void cycle_colors(void);
 
 #endif //_LC_LED_MATRIX_H_

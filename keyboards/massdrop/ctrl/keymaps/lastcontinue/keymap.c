@@ -3,6 +3,7 @@
 //allowed for key-by-key color settings
 #include "lc_led_matrix.h"
 #include "lc_led_matrix.c"
+#include "led_instructions.c"
 
 enum ctrl_keycodes {
     L_BRI = SAFE_RANGE, //LED Brightness Increase
@@ -24,7 +25,8 @@ enum ctrl_keycodes {
     DBG_KBD,            //DEBUG Toggle Keyboard Prints
     DBG_MOU,            //DEBUG Toggle Mouse Prints
     MD_BOOT,            //Restart into bootloader after hold timeout
-    MACRO_TEST          //Prints out current time to test Macros
+    MACRO_TEST,         //Prints out current time to test Macros
+    CYCLE_COLORS        //Cycles through color instructions from led_instructions.c
 };
 
 #define TG_NKRO MAGIC_TOGGLE_NKRO //Toggle 6KRO / NKRO mode
@@ -42,7 +44,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_CAPS, KC_LALT, KC_LGUI,                  KC_SPC,                              KC_RGUI, KC_RALT, MO(1),   KC_RCTL,            KC_LEFT, KC_DOWN, KC_RGHT \
     ),
     [1] = LAYOUT(
-        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, MACRO_TEST,            KC_MUTE, KC_TRNS, KC_TRNS, \
+        KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, CYCLE_COLORS, MACRO_TEST,    KC_MUTE, KC_TRNS, KC_TRNS, \
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,   KC_MPLY, KC_MSTP, KC_VOLU, \
         L_T_BR,  L_PSD,   L_BRI,   L_PSI,   KC_TRNS, KC_TRNS, KC_TRNS, U_T_AUTO,U_T_AGCR,KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,   KC_MPRV, KC_MNXT, KC_VOLD, \
         L_T_PTD, L_PTP,   L_BRD,   L_PTN,   KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, \
@@ -203,49 +205,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 SEND_STRING("time is now "__TIMESTAMP__);
             }
         return false;
+        case CYCLE_COLORS:
+            if(record->event.pressed) {
+                //see led_instructions.c for definition
+                cycle_colors();
+            }
+        return false;
         default:
             return true; //Process all other keycodes normally
     }
 }
-
-// If you don't want key-by-key color, just uncomment this next line and ...
-// led_instruction_t led_instructions[] = { { .end = 1 } };
-//...comment out or remove out this entire block
-led_instruction_t led_instructions[] = {
-    //light gray keys
-    { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_RGB, .id0 = 536813086, .id1 = 1073250300, .id2 = 33791, .r = 255, .g = 255, .b = 255 },
-    //dark gray keys
-    { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_RGB, .id0 = 3758154208, .id1 = 3221716995, .id2 = 8354816, .r = 0, .g = 0, .b = 255 },
-    //backlight keys
-    { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_RGB, .id2 = 4286578688, .id3 = 8388607, .r = 0, .g = 0, .b = 255 },
-    // escape
-    { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB, .id0 = 1, .layer = 0, .r = 0, .g = 0, .b = 255 },
-    { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB, .id0 = 1, .layer = 1, .r = 197, .g = 9, .b = 213 },
-    { .end = 1 }
-};
-
-/*
-Example led_instructions
-    // { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_RGB, .id0 = 10, .id1 = 9, .r = 255, .g = 0, .b = 0 },
-    // { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_PATTERN, .id0 = 4, .id1 = 0, .pattern_id = 8 },
-    // { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_RGB, .id0 = 8, .id1 = 0, .r = 0, .g = 255, .b = 0 },
-    // { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_PATTERN, .id0 = 16, .id1 = 0, .pattern_id = 9 },
-    // { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_RGB, .id0 = 32, .id1 = 0, .r = 0, .g = 0, .b = 255 },
-    // { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_RGB, .id0 = 40, .id1 = 0, .r = 0, .g = 0, .b = 255 },
-    // { .flags = LED_FLAG_MATCH_ID | LED_FLAG_USE_ROTATE_PATTERN, .id0 = 64, .id1 = 0},
-    // { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_ROTATE_PATTERN, .id0 = 262144, .id1 = 0, .layer = 0 },
-    // { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_ROTATE_PATTERN, .id0 = 16777216, .id1 = 0, .layer = 1 },
-*/
-
-/* Useful numbers
-All lights -
-.id0 = 4294967295, .id1 = 4294967295, .id2 = 4294967295, .id3 = 8388607,
-All keys -
-.id0 = 4294967295, .id1 = 4294967295, .id2 = 4194303
-Back light -
-.id2 = 4286578688, .id3 = 8388607,
-WASD -
-.id1 = 3670024,
-Arrows -
-.id2 = 7342080,
-*/
