@@ -23,6 +23,8 @@ led_instruction_t primary[] = {
     // escape
     { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB, .id0 = 1, .layer = 0, .r = 0, .g = 0, .b = 255 },
     { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB, .id0 = 1, .layer = 1, .r = 197, .g = 9, .b = 213 },
+    // "numpad"
+    { .flags = LED_FLAG_MATCH_ID | LED_FLAG_MATCH_LAYER | LED_FLAG_USE_RGB, .id0 = 1, .id1 = 234882816, .id2 = 197056, .id3 = 0, .layer = 2, .r = 0, .g = 255, .b = 0 },
     { .end = 1 }
 };
 
